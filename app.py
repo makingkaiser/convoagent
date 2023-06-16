@@ -15,7 +15,11 @@ from langchain.chat_models import ChatOpenAI
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 
-os.environ['OPENAI_API_KEY'] = <OPENAI_API_KEY>
+OPENAI_API_KEY=os.environ.get('OPENAI_API_KEY')
+
+#pinecone
+api_key=os.environ.get('PINECONE_API_KEY')
+env=os.environ.get('PINECONE_ENV')
 
 #Setting up ability to query Pinecone with tools
 
@@ -23,8 +27,8 @@ os.environ['OPENAI_API_KEY'] = <OPENAI_API_KEY>
 index_name = 'podcasts'
 
 #Pincone API key
-api_key = "721f43b4-3f81-4e8d-b42e-2a0eb86e5141"
-env = "asia-southeast1-gcp-free"
+#api_key = "721f43b4-3f81-4e8d-b42e-2a0eb86e5141"
+#env = "asia-southeast1-gcp-free"
 
 pinecone.init(api_key=api_key, environment=env)
 
