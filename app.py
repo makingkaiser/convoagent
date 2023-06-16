@@ -1,5 +1,6 @@
 import pinecone
 import os
+import openai
 from langchain.agents import Tool
 from langchain.agents import AgentType
 from langchain.agents import initialize_agent
