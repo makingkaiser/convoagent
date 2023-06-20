@@ -4,3 +4,4 @@ langchain==0.0.201
 pinecone_client==2.2.1
 gunicorn==19.7.1
 openai==0.27.0
+PyMuPDF==1.22.3
