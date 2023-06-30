@@ -1,6 +1,7 @@
 import pinecone
 import os
 import openai
+import pickle
 from langchain.agents import Tool
 from langchain.agents import AgentType
 from langchain.agents import initialize_agent
@@ -37,14 +38,22 @@ api_key = "721f43b4-3f81-4e8d-b42e-2a0eb86e5141"
 env = "asia-southeast1-gcp-free"
 
 
-
+memory = None
 app = Flask(__name__)
 CORS(app)
 @app.route('/api/execute-gpt-query/<string:namespace>', methods=['POST'])
 @cross_origin()
 
+
 def execute_python_function(namespace):
     pinecone.init(api_key=api_key, environment=env)
+    global memory
+    if memory is None:
+        try:
+            with open('memory.pickle', 'rb') as f:
+                memory = pickle.load(f)
+        except FileNotFoundError:
+            memory = ConversationBufferMemory(memory_key="chat_history")
 
 
     embeddings = OpenAIEmbeddings()
@@ -64,13 +73,9 @@ def execute_python_function(namespace):
         )
     ]
 
-    memory = ConversationBufferMemory(memory_key="chat_history")
+    #memory = ConversationBufferMemory(memory_key="chat_history")
 
     agent_chain = initialize_agent(tools, llm, agent=AgentType.CONVERSATIONAL_REACT_DESCRIPTION, verbose=True, memory=memory)
-
-
-    #agent_chain.run(input="Hello my name is Kaiser")
-    #agent_chain.run(input="What is my name?")
 
     
     print(request.json)
@@ -78,6 +83,8 @@ def execute_python_function(namespace):
     print(input_data)
 
     output = agent_chain.run(input=input_data)
+    with open('memory.pickle', 'wb') as f:
+        pickle.dump(memory, f)
     return jsonify({'output': output})
 
 @app.route('/upload/<string:namespace>', methods=['POST'])
