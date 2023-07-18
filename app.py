@@ -70,9 +70,9 @@ def execute_python_function(namespace):
 
     tools = [
         Tool(
-            name = 'Knowledge Base',
+            name = 'Document Search',
             func=embeddings_retriever.run,
-            description="only use this knowledge base of uploaded files when you are unable to find an answer yourself. Input should be a fully formed question.",
+            description="only use this of uploaded files when you are unable to find an answer yourself. Input should be a fully formed question.",
             
         )
     ]
@@ -151,6 +151,22 @@ def check_namespace_validity(namespace):
     if namespace in index_stats_response.namespaces.keys():
         return '1'
     return '0'
+
+@app.route("/api/delete-memory", methods=["DELETE"])
+@cross_origin()
+
+def delete_memory():
+    global memory
+
+    if not os.path.exists("memory.pickle"):
+        return jsonify({"message": "Memory file not found."})
+
+    try:
+        os.remove("memory.pickle")
+        memory = None  # Set memory to None
+        return jsonify({"message": "Memory file deleted successfully."})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run()
