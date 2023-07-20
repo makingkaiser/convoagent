@@ -72,7 +72,7 @@ def execute_python_function(namespace):
         Tool(
             name = 'Document Search',
             func=embeddings_retriever.run,
-            description="only use this of uploaded files when you are unable to find an answer yourself. Input should be a fully formed question.",
+            description="only use this search of text when you are unable to find an answer yourself. Input should be a fully formed question.",
             
         )
     ]
